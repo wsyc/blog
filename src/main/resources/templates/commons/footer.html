@@ -1,0 +1,82 @@
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" xmlns:th="http://www.w3.org/1999/xhtml"/>
+<footer1 th:fragment="footer">
+    <footer id="footer" class="overlay animated from-top">
+        <div class="decor-wrapper">
+            <svg id="footer-decor" class="decor top" xmlns="http://www.w3.org/2000/svg" version="1.1"
+                 viewbox="0 0 100 100" preserveaspectratio="none">
+                <path class="large left" d="M0 0 L50 50 L0 100" fill="rgba(255,255,255, .1)"></path>
+                <path class="large right" d="M100 0 L50 50 L100 100" fill="rgba(255,255,255, .1)"></path>
+                <path class="medium left" d="M0 0 L50 50 L0 66.6" fill="rgba(255,255,255, .3)"></path>
+                <path class="medium right" d="M100 0 L50 50 L100 66.6" fill="rgba(255,255,255, .3)"></path>
+                <path class="small left" d="M0 0 L50 50 L0 33.3" fill="rgba(255,255,255, .5)"></path>
+                <path class="small right" d="M100 0 L50 50 L100 33.3" fill="rgba(255,255,255, .5)"></path>
+                <path d="M0 0 L50 50 L100 0 L0 0" fill="rgba(255,255,255, 1)"></path>
+                <path d="M48 48 L50 51 L52 48 L48 48" fill="rgba(255,255,255, 1)"></path>
+            </svg>
+        </div>
+        <div class="socialize" data-aos="zoom-in">
+            <li>
+                <a title="weibo" class="socialicon" href="https://weibo.com/2125456580" target="_blank"><i class="iconfont" aria-hidden="true">&#xe601;</i></a>
+            </li>
+            <li class="wechat" style="cursor:pointer">
+                <a class="socialicon"><i class="iconfont">&#xe609;</i></a>
+                <div class="wechatimg"><img src="/images/wechat.jpg"></div>
+            </li>
+            <!--<li>-->
+                <!--<span style="cursor:pointer" title="QQ" class="socialicon" href="" target="_blank"><i class="iconfont"-->
+                                                                            <!--aria-hidden="true">&#xe616;</i></span>-->
+            <!--</li>-->
+        </div>
+        <div class="cr">
+            由spring boot、shiro、hibernate技术驱动 Copyright&copy;2018. Design by
+            <a href="/">ccong</a>
+
+        </div>
+        <div class="cr">
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1276275380'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1276275380%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+        </div>
+        <script type='text/javascript' src='/js/jquery.min.js'></script>
+        <script type='text/javascript' src='/js/plugins.js'></script>
+        <script type='text/javascript' src='/js/script.js'></script>
+        <script type='text/javascript' src='/js/particles.js'></script>
+        <script type='text/javascript' src='/js/aos.js'></script>
+        <script>
+            $(".sub-menu").html(11)
+            $.ajax({
+                url: "./getCategory",
+                type: "get",
+                async: true,
+                dataType : 'json',
+                success: function (data) {
+                    console.log(data)
+                    var html = ""
+                    for(var i in data){
+                        console.log(data)
+                        html += '<li id="menu-item-165"'+
+                                'class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-165">'+
+                            '<a href="/category?id='+data[i].id+'">'+ data[i].title +'</a>'+
+                            '</li>';
+                    }
+                    $(".sub-menu").html(html)
+                },
+                error:function (data) {
+
+                }
+            })
+        </script>
+        <script>
+            (function(){
+                var bp = document.createElement('script');
+                var curProtocol = window.location.protocol.split(':')[0];
+                if (curProtocol === 'https') {
+                    bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+                }
+                else {
+                    bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+                }
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(bp, s);
+            })();
+        </script>
+    </footer>
+</footer1>

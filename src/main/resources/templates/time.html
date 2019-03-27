@@ -1,0 +1,44 @@
+﻿<!doctype html>
+<html lang="zh" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>阅历-淙淙,淙淙博客,php,技术分享,php博客,mysql,java学习</title>
+    <meta name="keywords" content="淙淙,淙淙博客,php,技术分享,php博客,mysql,java学习"/>
+    <meta name="description" content="淙淙的原创技术博客,分享个人技术分享,个人开发经验,个人总结"/>
+    <link rel="stylesheet" type="text/css" href="/css/index.css" media="all">
+</head>
+
+<body class="home blog custom-background round-avatars">
+<div th:include="@{/commons/header} :: header"/>
+<div id="main" class="content">
+    <div class="container">
+        <style>
+            body.custom-background {
+                background: #fff
+            }
+
+            .container {
+                padding: 10px 0px;
+            }
+        </style>
+        <section class="post_content">
+            <header class="post_header">
+                <h1 class="post_title">阅历</h1>
+            </header>
+            <div class="applicant__timeline">
+                <ul>
+                    <li th:each="logger:${LoggerList}" th:class="${logger.type==1}?'success': (${logger.type==2} ? 'warning' : ' ')" >
+                        <div th:utext="${logger.title} + '<br><span class=time-ago>'+ ${logger.time} +'</span>'">版本正式更新至 3.7 ！</div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div th:include="@{/commons/footer} :: footer"/>
+</body>
+
+</html>

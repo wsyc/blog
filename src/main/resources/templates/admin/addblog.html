@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.0</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+    <link rel="stylesheet" href="/admin/css/font.css">
+    <link rel="stylesheet" href="/admin/css/xadmin.css">
+    <!--引入CSS-->
+    <link rel="stylesheet" type="text/css" href="/js/webuploader/webuploader.css">
+
+
+    <!--SWF在初始化的时候指定，在后面将展示-->
+
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/admin/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/admin/js/xadmin.js"></script>
+    <!--引入JS-->
+    <script type="text/javascript" src="/js/webuploader/webuploader.js"></script>
+
+    <script type="text/javascript" charset="utf-8" src="/js/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/js/ueditor/ueditor.all.min.js"></script>
+    <!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+    <!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
+    <script type="text/javascript" charset="utf-8" src="/js/ueditor/lang/zh-cn/zh-cn.js"></script>
+
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="x-body">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label for="title" class="layui-form-label">
+                <span class="x-red">*</span>标题
+            </label>
+            <div class="layui-input-block">
+                <input type="text" id="title" name="title" required="" lay-verify="required"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <input type="hidden" id="pic_id" value="" class="layui-input">
+        <div class="layui-form-item">
+            <label for="type" class="layui-form-label">
+                <span class="x-red">*</span>上传图片
+            </label>
+            <div class="layui-input-block">
+                <!--dom结构部分-->
+                <div id="uploader-demo">
+                    <!--用来存放item-->
+                    <div id="fileList" class="uploader-list"></div>
+                    <div id="filePicker">选择图片</div>
+                </div>
+
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">
+                详情
+            </label>
+            <div class="layui-input-block">
+                <script id="editor" name="detailContent" type="text/plain" style="width:100;height:500px;"></script>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="type" class="layui-form-label">
+                <span class="x-red">*</span>选择类型
+            </label>
+            <div class="layui-input-inline">
+                <select id="type" name="type" class="valid">
+                    <option value="1">样式1 封面</option>
+                    <option value="2">样式2 封面</option>
+                    <option value="3">样式3 多图</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="type" class="layui-form-label">
+                <span class="x-red">*</span>选择分类
+            </label>
+            <div class="layui-input-inline">
+                <select id="category_id" name="category_id" class="valid">
+                    <option th:each="category : ${categoryList}" th:value="${category.id}" th:text="${category.title}"
+                            value="1">样式1 封面
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="L_repass" class="layui-form-label">
+            </label>
+            <button class="layui-btn" lay-filter="add" lay-submit="">
+                增加
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    //实例化编辑器
+    //建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
+    var ue = UE.getEditor('editor');
+    UE.Editor.prototype._bkGetActionUrl = UE.Editor.prototype.getActionUrl;
+    UE.Editor.prototype.getActionUrl = function (action) {
+        if (action == 'uploadimage' || action == 'uploadscrawl' || action == 'uploadimage') {
+            return '/imgUpload3';
+            //'http://localhost:8080/imgUpload';为方法imgUpload的访问地址
+        } else {
+            return this._bkGetActionUrl.call(this, action);
+        }
+    }
+    // 初始化Web Uploader
+    var uploader = WebUploader.create({
+
+        // 选完文件后，是否自动上传。
+        auto: true,
+
+        // swf文件路径
+        swf: '/js/webuploader/Uploader.swf',
+
+        // 文件接收服务端。
+        server: '/uploadFile',
+
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: '#filePicker',
+
+        // 只允许选择图片文件。
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/*'
+        }
+    });
+
+    // 文件上传成功，给item添加成功class, 用样式标记上传成功。
+    uploader.on('uploadSuccess', function (file, response) {
+        $('#' + file.id).addClass('upload-state-done');
+        $("#pic_id").val(response.id)
+        console.log(response)
+        console.log("上传成功")
+    });
+
+    // 文件上传失败，显示上传出错。
+    uploader.on('uploadError', function (file) {
+        var $li = $('#' + file.id),
+            $error = $li.find('div.error');
+
+        // 避免重复创建
+        if (!$error.length) {
+            $error = $('<div class="error"></div>').appendTo($li);
+        }
+
+        $error.text('上传失败');
+    });
+
+
+    layui.use(['form', 'layer'], function () {
+        $ = layui.jquery;
+        var form = layui.form
+            , layer = layui.layer;
+
+        //自定义验证规则
+        form.verify({
+            // nikename: function (value) {
+            //     if (value.length < 5) {
+            //         return '昵称至少得5个字符啊';
+            //     }
+            // }
+            // , pass: [/(.+){6,12}$/, '密码必须6到12位']
+            // , repass: function (value) {
+            //     if ($('#L_pass').val() != $('#L_repass').val()) {
+            //         return '两次密码不一致';
+            //     }
+            // }
+        });
+
+        //监听提交
+        form.on('submit(add)', function (data) {
+            console.log(data);
+            //发异步，把数据提交给php
+            $.ajax({
+                url: "./add_blog",
+                type: "post",
+                data: {
+                    "title": data.field.title,
+                    "smarttitle": UE.getEditor('editor').getContentTxt(),
+                    "type": data.field.type,
+                    "category_id": data.field.category_id,
+                    "pic_id": $("#pic_id").val(),
+                    "content": UE.getEditor('editor').getContent(),
+                },
+                async: true,
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data)
+                    if (data.sta == 1) {
+                        layer.alert("增加成功", {icon: 6}, function (index) {
+                            //关闭当前frame
+                            parent.layer.close(index);
+                        });
+                    } else {
+                        layer.alert("增加失败", {icon: 6}, function (index) {
+                            //关闭当前frame
+                            parent.layer.close(index);
+                        });
+                    }
+                },
+                error: function (data) {
+
+                }
+            })
+            return false;
+        });
+
+
+    });
+</script>
+<script>var _hmt = _hmt || [];
+(function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();</script>
+</body>
+
+</html>
